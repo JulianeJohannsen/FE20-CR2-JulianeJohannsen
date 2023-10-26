@@ -1,5 +1,6 @@
 let weeklyTasks = JSON.parse(tasks);
 
+// sort the tasks by priority level
 document.getElementById("sortBtn").addEventListener("click", function(){
     weeklyTasks.sort((a, b) => b.importance - a.importance);
     document.getElementById("result").innerHTML = "";
@@ -8,6 +9,7 @@ document.getElementById("sortBtn").addEventListener("click", function(){
     doneTask();
 });
 
+// display tasks
 function fill(){
     weeklyTasks.forEach(task => {
     document.getElementById("result").innerHTML += `
@@ -45,21 +47,28 @@ fill();
 buttonClick();
 doneTask();
 
+// add event listener to priority level button
 function buttonClick(){
 let priorityBtns = document.querySelectorAll(".priorityBtn");
 
 priorityBtns.forEach((button, i) => {
     button.addEventListener("click", function (){
+       increase(i);
        countPrior(i); 
     })
+    countPrior(i);
 })};
 
 
-function countPrior(i){
+// increase priority level
+function increase(i){
     if (weeklyTasks[i].importance < 5) 
     weeklyTasks[i].importance++;
-    document.querySelectorAll(".priority")[i].innerHTML = weeklyTasks[i].importance
-        
+    document.querySelectorAll(".priority")[i].innerHTML = weeklyTasks[i].importance;
+}
+
+// change background color due to priority level
+function countPrior(i){        
     if (weeklyTasks[i].importance > 1) {
         document.querySelectorAll(".priority")[i].classList.remove("btn-success");
         document.querySelectorAll(".priority")[i].classList.add("btn-warning");      
@@ -70,18 +79,34 @@ function countPrior(i){
     }
 }
 
+// add event listener to done button
 function doneTask(){
     let doneBtns = document.querySelectorAll(".doneBtn");
     doneBtns.forEach((button, i) => {
         button.addEventListener("click", function (){
-           changeColor(i); 
+           resetPrior(i);
+           changeColor(i);
         })
+        changeColor(i);
     })};
 
+// reset priority level of task (done button)
+function resetPrior(i){
+    if (weeklyTasks[i].status == false) {
+        weeklyTasks[i].importance = 0;
+        document.querySelectorAll(".priority")[i].innerHTML = 0; 
+        weeklyTasks[i].status = true;
+    }
+}
+
+// change background color of task (done button)
 function changeColor(i){
-    document.querySelectorAll(".card")[i].classList.add("bg-success-subtle");
-    document.querySelectorAll(".priority")[i].classList.remove("btn-warning");
-    document.querySelectorAll(".priority")[i].classList.remove("btn-danger");
-    document.querySelectorAll(".priority")[i].classList.add("btn-success");
-    document.querySelectorAll(".priority")[i].innerHTML = 0;
+    if (weeklyTasks[i].status == true){
+        weeklyTasks[i].importance = 0;
+        document.querySelectorAll(".priority")[i].innerHTML = 0; 
+        document.querySelectorAll(".card")[i].classList.add("bg-success-subtle");
+        document.querySelectorAll(".priority")[i].classList.remove("btn-warning");
+        document.querySelectorAll(".priority")[i].classList.remove("btn-danger");
+        document.querySelectorAll(".priority")[i].classList.add("btn-success");  
+    }
 }
